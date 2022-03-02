@@ -57,4 +57,7 @@ const createHotel = (count) => {
 // Создание массива с отелями
 const HOTELS_COUNT = 10;
 const hotels = new Array(HOTELS_COUNT).fill().map(createHotel);
-hotels; // заглушка для линтера
+
+// заглушка для линтера
+const addHotels = () => {};
+addHotels(hotels);
