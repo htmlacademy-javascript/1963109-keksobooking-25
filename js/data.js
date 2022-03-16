@@ -16,7 +16,7 @@ export const createHotel = (count) => {
 
   // *****Элементы итогового объекта*****
   const author = {
-    avatar: `img/avatars/user${count}.png`
+    avatar: `img/avatars/user0${count + 1}.png`
   };
 
   const offer = {

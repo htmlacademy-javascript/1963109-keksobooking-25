@@ -1,9 +1,9 @@
 import { HOTELS_COUNT } from './const.js';
 import { createHotel } from './data.js';
-import { createPopup } from './utils/popup.js';
+import { createPopup } from './utils/create-popup.js';
 
 // Создание массива с отелями
-const hotels = new Array(HOTELS_COUNT).fill().map(createHotel);
+const hotels = new Array(HOTELS_COUNT).fill().map((item, index) => createHotel(index));
 
 //Заглушка для линтера
 const addHotels = () => { };
@@ -13,3 +13,5 @@ addHotels(hotels);
 hotels.forEach((hotel) => {
   createPopup(hotel);
 });
+
+document.querySelector('#map-canvas').append(createPopup(hotels[0]));
