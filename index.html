@@ -78,7 +78,9 @@
     <!-- Форма объявления -->
     <section class="notice">
       <h2 class="notice__title">Ваше объявление</h2>
-      <form class="ad-form" method="post" enctype="multipart/form-data" autocomplete="off">
+      <!--Пропишите тегу <form> правильные значения атрибутов method и адрес action для отправки формы на сервер (Задание 8.1)-->
+      <form class="ad-form" method="POST" enctype="multipart/form-data"
+        action="https://25.javascript.pages.academy/keksobooking" autocomplete="off">
         <fieldset class="ad-form-header">
           <legend class="ad-form-header__title">Ваша фотография (для карты)</legend>
           <div class="ad-form-header__upload">
@@ -95,8 +97,14 @@
           </div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
-          <label class="ad-form__label" for="title">Заголовок объявления</label>
-          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
+          <!--Ограничение на вводимые данные в заголовок (Задание 8.1)-->
+          <label class="ad-form__label">
+            <div class="input-title">Заголовок объявления</div>
+            <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио"
+              minlength="30" maxlength="100" data-pristine-required data-pristine-required-message="Обязательное поле"
+              data-pristine-minlength-message="Минимальная длина 30 символа"
+              data-pristine-maxlength-message="Максимальная длина 100 символов">
+          </label>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес (координаты)</label>
@@ -113,8 +121,14 @@
           </select>
         </fieldset>
         <fieldset class="ad-form__element">
-          <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" name="price" type="number" placeholder="5000">
+          <!--Ограничение на вводимые данные в цену за ночь (Задание 8.1)-->
+          <label class="ad-form__label">
+            <div class="input-title">Цена за ночь, руб.</div>
+            <input id="price" name="price" type="number" placeholder="от 0 у.е." min="0" max="100000" step="100"
+              data-pristine-required data-pristine-required-message="Обязательное поле"
+              data-pristine-minlength-message="Минимальная цена 0 у.е."
+              data-pristine-maxlength-message="Максимальная цена 100000 у.е.">
+          </label>
           <div class="ad-form__slider"></div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--time">
@@ -142,10 +156,10 @@
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="capacity">Количество мест</label>
           <select id="capacity" name="capacity">
-            <option value="3" selected>для 3 гостей</option>
-            <option value="2">для 2 гостей</option>
-            <option value="1">для 1 гостя</option>
-            <option value="0">не для гостей</option>
+            <option class="hidden" value="3">для 3 гостей</option>
+            <option class="hidden" value="2">для 2 гостей</option>
+            <option value="1" selected>для 1 гостя</option>
+            <option class="hidden" value="0">не для гостей</option>
           </select>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide features">
@@ -251,7 +265,6 @@
       <button type="button" class="error__button">Попробовать снова</button>
     </div>
   </template>
-
   <script src="./js/main.js" type="module"></script>
 </body>
 

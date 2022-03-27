@@ -935,6 +935,8 @@ fieldset {
 }
 
 .popup__photo {
+  max-width: 70px;
+  max-height: 70px;
   margin-right: 5px;
   margin-bottom: 5px;
 }
@@ -1052,4 +1054,24 @@ fieldset {
 
 .hidden {
   display: none;
+}
+
+.input-title {
+  margin-bottom: 5px;
+}
+
+.ad-form__error-text {
+  width: calc(100% - 20px);
+  margin: 4px 0;
+  padding: 5px 10px;
+  background-color: #fff;
+  border-radius: 3px;
+  color: rgb(255, 0, 0);
+  font-weight: 600;
+  text-align: center;
+}
+
+.has-danger input,
+.has-danger select {
+  border:2px solid red;
 }
