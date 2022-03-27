@@ -1,6 +1,7 @@
 import { HOTELS_COUNT } from './const.js';
 import { createHotel } from './data.js';
 import { createPopup } from './create-popup.js';
+import { initFormValidate } from './utils/work-with-form.js';
 
 import {
   setActive,
@@ -23,4 +24,8 @@ hotels.forEach((hotel) => {
   createPopup(hotel);
 });
 
-document.querySelector('#map-canvas').append(createPopup(hotels[0]));
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('#map-canvas').append(createPopup(hotels[0]));
+  initFormValidate();
+});
+

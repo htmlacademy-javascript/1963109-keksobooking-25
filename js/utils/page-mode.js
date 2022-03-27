@@ -1,5 +1,3 @@
-//Форма заполнения информации об объявлении .ad-form содержит класс ad-form--disabled;
-
 const adForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
 
