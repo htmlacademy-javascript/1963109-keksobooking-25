@@ -12,5 +12,6 @@ const PHOTO_EXAMPLES = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/brandon-hoogenboom-SNxQGWxZQi0.jpg',
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg'
 ];
+const MAX_GUESTS = 100;
 
-export { HOTELS_COUNT, LAT_START, LAT_END, LNG_START, LNG_END, BUILDINGS, CHECK_TIME, TYPE_OF_ROOM, FACILITIES, PHOTO_EXAMPLES };
+export { HOTELS_COUNT, LAT_START, LAT_END, LNG_START, LNG_END, BUILDINGS, CHECK_TIME, TYPE_OF_ROOM, FACILITIES, PHOTO_EXAMPLES, MAX_GUESTS };
