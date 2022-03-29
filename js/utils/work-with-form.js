@@ -1,5 +1,6 @@
 import '../../pristine/pristine.min.js';
-/*eslint-disable*/
+import { MAX_GUESTS } from '../const.js';
+
 export const initFormValidate = () => {
   const appartmentsType = document.querySelector('#type');
   const appartmentsPrice = document.querySelector('#price');
@@ -9,12 +10,11 @@ export const initFormValidate = () => {
   const guests = [...capacity.children];
   const timein = document.querySelector('#timein');
   const timeout = document.querySelector('#timeout');
-  const hundred = '100';
 
   // Синхронизация полей «Количество комнат» и «Количество мест» задание 8.1
   const enableGuests = (selectedRooms) => {
     guests.slice().reverse().forEach((guest, index) => {
-      if (index <= selectedRooms && index !== 0 && selectedRooms !== hundred) {
+      if (index <= selectedRooms && index !== 0 && selectedRooms !== String(MAX_GUESTS)) {
         if (guest.classList.contains('hidden')) {
           guest.classList.remove('hidden');
         }
@@ -22,7 +22,7 @@ export const initFormValidate = () => {
           guest.setAttribute('selected', 'selected');
           capacity.value = index;
         }
-      } else if (index === 0 && selectedRooms === hundred) {
+      } else if (index === 0 && selectedRooms === String(MAX_GUESTS)) {
         guest.classList.remove('hidden');
         guest.setAttribute('selected', 'selected');
       } else {
@@ -64,6 +64,37 @@ export const initFormValidate = () => {
     enableGuests(event.target.value);
   });
 
+  // Синхронизация времени заезда и времени выезда (Задание 8.2)
+  const timeinArr = [...timein.children];
+  const timeoutArr = [...timeout.children];
+
+  const conditionTime = (arr, currentTime) => {
+    arr.forEach((time) => {
+      if (time.value === currentTime.value) {
+        time.setAttribute('selected', 'selected');
+      } else {
+        time.removeAttribute('selected');
+      }
+    });
+  };
+
+  const syncTime = (target, str) => {
+    if (str === 'in') {
+      conditionTime(timeoutArr, target);
+    }
+    if (str === 'out') {
+      conditionTime(timeinArr, target);
+    }
+  };
+
+  timein.addEventListener('change', (event) => {
+    syncTime(event.target, 'in');
+  });
+
+  timeout.addEventListener('change', (event) => {
+    syncTime(event.target, 'out');
+  });
+
   const pristine = new Pristine(form, {
     classTo: 'ad-form__label',
     errorTextParent: 'ad-form__label',
@@ -73,43 +104,17 @@ export const initFormValidate = () => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
-    console.log(pristine);
     const isValid = pristine.validate();
     if (isValid) {
+      /*eslint-disable*/
       console.log('Можно отправлять');
     } else {
       console.log('Форма невалидна');
+      /*eslint-enable*/
     }
   });
-}
 
-// Синхронизация времени заезда и времени выезда (Задание 8.2)
-const timeinArr = [...timein.children];
-const timeoutArr = [...timeout.children];
 
-const conditionTime = (arr, currentTime) => {
-  arr.forEach((time) => {
-    if (time.value === currentTime.value) {
-      time.setAttribute('selected', 'selected');
-    } else {
-      time.removeAttribute('selected');
-    }
-  });
 };
 
-const syncTime = (target, str) => {
-  if (str === 'in') {
-    conditionTime(timeoutArr, target);
-  }
-  if (str === 'out') {
-    conditionTime(timeinArr, target);
-  }
-};
 
-timein.addEventListener('change', (event) => {
-  syncTime(event.target, 'in');
-});
-
-timeout.addEventListener('change', (event) => {
-  syncTime(event.target, 'out');
-});
