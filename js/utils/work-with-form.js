@@ -9,11 +9,12 @@ export const initFormValidate = () => {
   const guests = [...capacity.children];
   const timein = document.querySelector('#timein');
   const timeout = document.querySelector('#timeout');
+  const hundred = '100';
 
   // Синхронизация полей «Количество комнат» и «Количество мест» задание 8.1
   const enableGuests = (selectedRooms) => {
     guests.slice().reverse().forEach((guest, index) => {
-      if (index <= selectedRooms && index !== 0 && selectedRooms !== '100') {
+      if (index <= selectedRooms && index !== 0 && selectedRooms !== hundred) {
         if (guest.classList.contains('hidden')) {
           guest.classList.remove('hidden');
         }
@@ -21,7 +22,7 @@ export const initFormValidate = () => {
           guest.setAttribute('selected', 'selected');
           capacity.value = index;
         }
-      } else if (index === 0 && selectedRooms === '100') {
+      } else if (index === 0 && selectedRooms === hundred) {
         guest.classList.remove('hidden');
         guest.setAttribute('selected', 'selected');
       } else {
