@@ -3,6 +3,7 @@ import { shuffleArr } from './utils/shuffle-arr.js';
 import { growArr } from './utils/grow-arr.js';
 import { returnRandomDiceNum } from './utils/return-random-dice-num.js';
 import { returnRandomNumber } from './utils/return-random-num.js';
+import { checkNumeral } from './utils/check-numeral.js';
 
 //функция для создания обьекта
 export const createHotel = (count) => {
@@ -13,10 +14,9 @@ export const createHotel = (count) => {
     lng: returnRandomNumber(LNG_START, LNG_END, 5)
   };
 
-
   // *****Элементы итогового объекта*****
   const author = {
-    avatar: `img/avatars/user0${count + 1}.png`
+    avatar: `img/avatars/user${checkNumeral(count)}.png`,
   };
 
   const offer = {
