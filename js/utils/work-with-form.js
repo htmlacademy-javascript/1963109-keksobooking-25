@@ -1,5 +1,5 @@
 import '../../pristine/pristine.min.js';
-import { MAX_GUESTS } from '../const.js';
+import { MAX_GUESTS, BUNGALOW_MIN_PRICE, HOUSE_MIN_PRICE, FLAT_MIN_PRICE, PALACE_MIN_PRICE, HOTEL_MIN_PRICE } from '../const.js';
 
 export const initFormValidate = () => {
   const appartmentsType = document.querySelector('#type');
@@ -36,23 +36,23 @@ export const initFormValidate = () => {
   appartmentsType.addEventListener('change', (event) => {
     switch (event.target.value) {
       case 'flat':
-        appartmentsPrice.setAttribute('min', 1000);
+        appartmentsPrice.setAttribute('min', FLAT_MIN_PRICE);
         appartmentsPrice.setAttribute('placeholder', 'от 1000 у.е.');
         break;
       case 'bungalow':
-        appartmentsPrice.setAttribute('min', 0);
+        appartmentsPrice.setAttribute('min', BUNGALOW_MIN_PRICE);
         appartmentsPrice.setAttribute('placeholder', 'от 0 у.е.');
         break;
       case 'house':
-        appartmentsPrice.setAttribute('min', 5000);
+        appartmentsPrice.setAttribute('min', HOUSE_MIN_PRICE);
         appartmentsPrice.setAttribute('placeholder', 'от 5000 у.е.');
         break;
       case 'palace':
-        appartmentsPrice.setAttribute('min', 10000);
+        appartmentsPrice.setAttribute('min', PALACE_MIN_PRICE);
         appartmentsPrice.setAttribute('placeholder', 'от 10000 у.е.');
         break;
       case 'hotel':
-        appartmentsPrice.setAttribute('min', 3000);
+        appartmentsPrice.setAttribute('min', HOTEL_MIN_PRICE);
         appartmentsPrice.setAttribute('placeholder', 'от 3000 у.е.');
         break;
       default:
