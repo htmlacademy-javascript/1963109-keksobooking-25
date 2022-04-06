@@ -4,7 +4,7 @@ import {
 import {
   createPopup
 } from './create-popup.js';
-import { DEFAULT_COORDINATES, MAIN_MARKER_PATH, MARKER_PATH } from '../const.js';
+import { DEFAULT_COORDINATES, MAIN_MARKER_PATH, MAIN_MARKER_SIZE, MARKER_PATH, MARKER_SIZE } from '../const.js';
 
 const address = document.querySelector('#address');
 
@@ -37,7 +37,7 @@ export const createMap = (hotelsList) => {
   // Кастомный маркер -
   const mainPinIcon = L.icon({
     iconUrl: MAIN_MARKER_PATH,
-    iconSize: [52, 52],
+    iconSize: MAIN_MARKER_SIZE,
     iconAnchor: [26, 52],
   });
   // Инициализация главного маркера
@@ -70,7 +70,7 @@ export const createMap = (hotelsList) => {
 
     const icon = L.icon({
       iconUrl: MARKER_PATH,
-      iconSize: [40, 40],
+      iconSize: MARKER_SIZE,
       iconAnchor: [20, 40],
     });
 
