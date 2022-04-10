@@ -1,4 +1,4 @@
-import { BUILDINGS, CHECK_TIME, FACILITIES, LAT_END, LAT_START, LNG_END, LNG_START, PHOTO_EXAMPLES, TYPE_OF_ROOM } from './const.js';
+import { BUILDINGS, CHECK_TIME, FACILITIES, LAT_END, LAT_START, LNG_END, LNG_START, OFFER_MAX_GUESTS, OFFER_MAX_PRICE, OFFER_MAX_ROOMS, OFFER_MIN_GUESTS, OFFER_MIN_PRICE, OFFER_MIN_ROOMS, PHOTO_EXAMPLES, TYPE_OF_ROOM } from './const.js';
 import { shuffleArr } from './utils/shuffle-arr.js';
 import { growArr } from './utils/grow-arr.js';
 import { returnRandomDiceNum } from './utils/return-random-dice-num.js';
@@ -22,10 +22,10 @@ export const createHotel = (count) => {
   const offer = {
     title: `Отель ${count + 1}`,
     address: `${location.lat} , ${location.lng}`,
-    price: returnRandomDiceNum(1000, 1000000),
+    price: returnRandomDiceNum(OFFER_MIN_PRICE, OFFER_MAX_PRICE),
     type: BUILDINGS[returnRandomDiceNum(0, BUILDINGS.length - 1)],
-    rooms: returnRandomDiceNum(1, 10),
-    guests: returnRandomDiceNum(1, 10),
+    rooms: returnRandomDiceNum(OFFER_MIN_ROOMS, OFFER_MAX_ROOMS),
+    guests: returnRandomDiceNum(OFFER_MIN_GUESTS, OFFER_MAX_GUESTS),
     checkin: CHECK_TIME[returnRandomDiceNum(0, CHECK_TIME.length - 1)],
     ckeckout: CHECK_TIME[returnRandomDiceNum(0, CHECK_TIME.length - 1)],
     features: shuffleArr(FACILITIES),

@@ -37,23 +37,23 @@ export const initFormValidate = () => {
     switch (event.target.value) {
       case 'flat':
         appartmentsPrice.setAttribute('min', FLAT_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', 'от 1000 у.е.');
+        appartmentsPrice.setAttribute('placeholder', `от ${FLAT_MIN_PRICE} ₽`);
         break;
       case 'bungalow':
         appartmentsPrice.setAttribute('min', BUNGALOW_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', 'от 0 у.е.');
+        appartmentsPrice.setAttribute('placeholder', `от ${BUNGALOW_MIN_PRICE} ₽`);
         break;
       case 'house':
         appartmentsPrice.setAttribute('min', HOUSE_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', 'от 5000 у.е.');
+        appartmentsPrice.setAttribute('placeholder', `от ${HOUSE_MIN_PRICE} ₽`);
         break;
       case 'palace':
         appartmentsPrice.setAttribute('min', PALACE_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', 'от 10000 у.е.');
+        appartmentsPrice.setAttribute('placeholder', `от ${PALACE_MIN_PRICE} ₽`);
         break;
       case 'hotel':
         appartmentsPrice.setAttribute('min', HOTEL_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', 'от 3000 у.е.');
+        appartmentsPrice.setAttribute('placeholder', `от ${HOTEL_MIN_PRICE} ₽`);
         break;
       default:
         break;
