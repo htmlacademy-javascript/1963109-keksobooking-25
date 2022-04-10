@@ -1,19 +1,10 @@
-import { HOTELS_COUNT } from './const.js';
-import { createHotel } from './data.js';
-import { initFormValidate } from './utils/work-with-form.js';
-import {
-  setActive,
-  setDisabled
-} from './utils/page-mode.js';
-import { createMap } from './utils/create-map.js';
+import { getData } from './utils/work-with-server.js';
+import { onGetDataFail, onGetDataSuccess } from './utils/data-events.js';
+import { setDisabled } from './utils/page-mode.js';
+import { setUserFormReset, setUserFormSubmit, setValidForm } from './utils/work-with-form.js';
 
-setDisabled();
-setActive();
-
-// Создание массива с отелями
-const hotels = new Array(HOTELS_COUNT).fill().map((item, index) => createHotel(index));
-
-document.addEventListener('DOMContentLoaded', () => {
-  createMap(hotels);
-  initFormValidate();
-});
+setDisabled(); // Дизейблим форму
+setValidForm(); // Подключаем валидацию формы
+getData(onGetDataSuccess, onGetDataFail); // Получаем данные отелей с сервера
+setUserFormSubmit(); // Установка новой логики отправки формы объявления
+setUserFormReset(); // Установка новой логики сброса формы объявления
