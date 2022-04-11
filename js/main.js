@@ -1,4 +1,4 @@
-import { getData } from './utils/work-with-server.js';
+import { getData } from './utils/requests';
 import { onGetDataFail, onGetDataSuccess } from './utils/data-events.js';
 import { setDisabled } from './utils/page-mode.js';
 import { setUserFormReset, setUserFormSubmit, setValidForm } from './utils/work-with-form.js';
