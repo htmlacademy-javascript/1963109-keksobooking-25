@@ -1,26 +1,24 @@
 import '../../pristine/pristine.min.js';
 import { MAX_GUESTS, BUNGALOW_MIN_PRICE, HOUSE_MIN_PRICE, FLAT_MIN_PRICE, PALACE_MIN_PRICE, HOTEL_MIN_PRICE } from '../const.js';
+import { postData } from './requests.js';
+import { sentDataFail, sentDataSuccess } from './data-events.js';
+import { AD_FORM, AD_FORM_SUBMIT, USER_FORM_RESET, AVATAR, TITLE, ADDRESS, IMAGES, APPARTMENTS_TYPE,
+  APPARTMENTS_OPTIONS, APPARTMENTS_PRICE, CAPACITY, GUESTS, ROOM_NUMBER, COUNT_ROOMS,
+  TIMEIN, TIMEIN_ARR, TIMEOUT, TIMEOUT_ARR, FEATURES, DESCRIPTION} from '../const.js';
 
 export const initFormValidate = () => {
-  const appartmentsType = document.querySelector('#type');
-  const appartmentsPrice = document.querySelector('#price');
   const form = document.querySelector('.ad-form');
-  const capacity = document.querySelector('#capacity');
-  const roomNumber = document.querySelector('#room_number');
-  const guests = [...capacity.children];
-  const timein = document.querySelector('#timein');
-  const timeout = document.querySelector('#timeout');
 
   // Синхронизация полей «Количество комнат» и «Количество мест» задание 8.1
   const enableGuests = (selectedRooms) => {
-    guests.slice().reverse().forEach((guest, index) => {
+    GUESTS.slice().reverse().forEach((guest, index) => {
       if (index <= selectedRooms && index !== 0 && selectedRooms !== String(MAX_GUESTS)) {
         if (guest.classList.contains('hidden')) {
           guest.classList.remove('hidden');
         }
         if (index === 1) {
           guest.setAttribute('selected', 'selected');
-          capacity.value = index;
+          CAPACITY.value = index;
         }
       } else if (index === 0 && selectedRooms === String(MAX_GUESTS)) {
         guest.classList.remove('hidden');
@@ -33,41 +31,43 @@ export const initFormValidate = () => {
   };
 
   // Логика выбора типа жилья (Задание 8.2)
-  appartmentsType.addEventListener('change', (event) => {
+  APPARTMENTS_TYPE.addEventListener('change', (event) => {
     switch (event.target.value) {
       case 'flat':
-        appartmentsPrice.setAttribute('min', FLAT_MIN_PRICE); //?
-        appartmentsPrice.setAttribute('placeholder', `от ${FLAT_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.setAttribute('min', `${FLAT_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.value = '';
+        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${FLAT_MIN_PRICE} ₽`); //?
         break;
       case 'bungalow':
-        appartmentsPrice.setAttribute('min', BUNGALOW_MIN_PRICE); //?
-        appartmentsPrice.setAttribute('placeholder', `от ${BUNGALOW_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.setAttribute('min', `${BUNGALOW_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.value = '';
+        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${BUNGALOW_MIN_PRICE} ₽`); //?
         break;
       case 'house':
-        appartmentsPrice.setAttribute('min', HOUSE_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', `от ${HOUSE_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.setAttribute('min', `${HOUSE_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.value = '';
+        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${HOUSE_MIN_PRICE} ₽`); //?
         break;
       case 'palace':
-        appartmentsPrice.setAttribute('min', PALACE_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', `от ${PALACE_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.setAttribute('min', `${PALACE_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.value = '';
+        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${PALACE_MIN_PRICE} ₽`); //?
         break;
       case 'hotel':
-        appartmentsPrice.setAttribute('min', HOTEL_MIN_PRICE);
-        appartmentsPrice.setAttribute('placeholder', `от ${HOTEL_MIN_PRICE} ₽`);
+        APPARTMENTS_PRICE.setAttribute('min', `${HOTEL_MIN_PRICE} ₽`); //?
+        APPARTMENTS_PRICE.value = '';
+        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${HOTEL_MIN_PRICE} ₽`); //?
         break;
       default:
         break;
     }
   });
 
-  roomNumber.addEventListener('change', (event) => {
+  ROOM_NUMBER.addEventListener('change', (event) => {
     enableGuests(event.target.value);
   });
 
   // Синхронизация времени заезда и времени выезда (Задание 8.2)
-  const timeinArr = [...timein.children];
-  const timeoutArr = [...timeout.children];
-
   const conditionTime = (arr, currentTime) => {
     arr.forEach((time) => {
       if (time.value === currentTime.value) {
@@ -80,18 +80,18 @@ export const initFormValidate = () => {
 
   const syncTime = (target, str) => {
     if (str === 'in') {
-      conditionTime(timeoutArr, target);
+      conditionTime(TIMEOUT_ARR, target);
     }
     if (str === 'out') {
-      conditionTime(timeinArr, target);
+      conditionTime(TIMEIN_ARR, target);
     }
   };
 
-  timein.addEventListener('change', (event) => {
+  TIMEIN.addEventListener('change', (event) => {
     syncTime(event.target, 'in');
   });
 
-  timeout.addEventListener('change', (event) => {
+  TIMEOUT.addEventListener('change', (event) => {
     syncTime(event.target, 'out');
   });
 
@@ -117,4 +117,81 @@ export const initFormValidate = () => {
 
 };
 
+const setCurrentOption = (arr, index) => {
+  arr.forEach((option, itemIndex) => {
+    if (option.hasAttribute('selected')) {
+      option.removeAttribute('selected');
+    }
+    if (itemIndex === index) {
+      option.setAttribute('selected', 'selected');
+    }
+  });
+};
+
+// Функция сброса формы создания объявления
+export const resetUserForm = () => {
+  // Аватар
+  AVATAR.value = '';
+
+  // Заголовок
+  TITLE.value = '';
+
+  // Координаты
+  ADDRESS.value = ADDRESS.defaultValue;
+
+  // Тип жилья
+  setCurrentOption(APPARTMENTS_OPTIONS, 0);
+
+  // Цена за ночь
+  APPARTMENTS_PRICE.value = APPARTMENTS_PRICE.defaultValue;
+  APPARTMENTS_PRICE.setAttribute('placeholder', 'от 0 ₽');
+
+  // Количество комнат
+  setCurrentOption(COUNT_ROOMS, 0);
+
+  // Количество гостей
+  setCurrentOption(GUESTS, 2);
+  CAPACITY.value = '1';
+
+  // Время заезда
+  setCurrentOption(TIMEIN_ARR, 0);
+  TIMEIN.value = '12:00';
+
+  // Время выезда
+  setCurrentOption(TIMEOUT_ARR, 0);
+  TIMEOUT.value = '12:00';
+
+  // Удобства
+  FEATURES.forEach((feature) => {
+    feature.checked = false;
+  });
+
+  // Описание
+  DESCRIPTION.value = '';
+
+  // Фото жилья
+  IMAGES.value = '';
+};
+
+// Функция переопределения логики кнопки "Опубликовать"
+export const setUserFormSubmit = () => {
+  AD_FORM.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    AD_FORM_SUBMIT.setAttribute('disabled', '');
+
+    postData(
+      sentDataSuccess,
+      sentDataFail,
+      new FormData(evt.target),
+    );
+  });
+};
+
+// Функция переопределение логики кнопки "очистить"
+export const setUserFormReset = () => {
+  USER_FORM_RESET.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    resetUserForm();
+  });
+};
 

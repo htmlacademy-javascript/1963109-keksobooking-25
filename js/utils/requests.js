@@ -24,9 +24,9 @@ export const getData = (onSuccess, onError) => {
 export const postData = (onSuccess, onError, body) => {
   fetch(
     POST_LINK, {
-    method: 'POST',
-    body,
-  })
+      method: 'POST',
+      body,
+    })
     .then((response) => {
       if (response.ok) {
         onSuccess();

@@ -1,7 +1,13 @@
-import { createMap } from './create-map.js';
-
-import { getData, postData } from './work-with-server.js';
-import { resetUserForm } from './work-with-form.js';
+import {
+  createMap
+} from './create-map.js';
+import {
+  getData,
+  postData
+} from './requests.js';
+import {
+  resetUserForm
+} from './work-with-form.js';
 
 const errorDownloadMessage = document.querySelector('#error-downloading').content;
 const errorPostMessage = document.querySelector('#error').content;
@@ -10,13 +16,12 @@ const messageWrapper = document.querySelector('body');
 const adFormSubmit = document.querySelector('.ad-form__submit');
 
 // Успешное получение данных
-export const onGetDataSuccess = (data) => {
+export const getDataSuccess = (data) => {
   createMap(data); // Создаем карту с полученными данными
-
 };
 
 // Ошибка получения данных
-export const onGetDataFail = () => {
+export const getDataFail = () => {
   // Если сообщение ранее не выводилось
   if (!document.querySelector('.error-downloading')) {
     messageWrapper.prepend(errorDownloadMessage);
@@ -33,12 +38,12 @@ export const onGetDataFail = () => {
   // Скрываем сообщение и пытаемся получить данные ещё раз
   downloadBtn.addEventListener('click', () => {
     errDownloadContent.classList.add('hidden');
-    getData(onGetDataSuccess, onGetDataFail);
+    getData(getDataSuccess, getDataFail);
   });
 };
 
 // Успешная отправка данных
-export const onSentDataSuccess = () => {
+export const sentDataSuccess = () => {
   // Если сообщение ранее не выводилось
   if (!document.querySelector('.success')) {
     messageWrapper.prepend(successPostMessage);
@@ -74,7 +79,7 @@ export const onSentDataSuccess = () => {
 };
 
 // Ошибка отправки данных
-export const onSentDataFail = () => {
+export const sentDataFail = () => {
   // Если сообщение ранее не выводилось
   if (!document.querySelector('.error')) {
     messageWrapper.prepend(errorPostMessage);
@@ -91,6 +96,6 @@ export const onSentDataFail = () => {
   // Скрываем сообщение и пытаемся отправить данные ещё раз
   errBtn.addEventListener('click', () => {
     errContent.classList.add('hidden');
-    postData(onSentDataSuccess, onSentDataFail);
+    postData(sentDataSuccess, sentDataFail);
   });
 };
