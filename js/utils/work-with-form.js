@@ -1,26 +1,49 @@
 import '../../pristine/pristine.min.js';
-import { MAX_GUESTS, BUNGALOW_MIN_PRICE, HOUSE_MIN_PRICE, FLAT_MIN_PRICE, PALACE_MIN_PRICE, HOTEL_MIN_PRICE } from '../const.js';
+import { DEFAULT_COORDINATES, BUNGALOW_MIN_PRICE, HOUSE_MIN_PRICE, FLAT_MIN_PRICE, PALACE_MIN_PRICE, HOTEL_MIN_PRICE, MAX_GUESTS } from '../const.js';
 import { postData } from './requests.js';
-import { sentDataFail, sentDataSuccess } from './data-events.js';
-import { AD_FORM, AD_FORM_SUBMIT, USER_FORM_RESET, AVATAR, TITLE, ADDRESS, IMAGES, APPARTMENTS_TYPE,
-  APPARTMENTS_OPTIONS, APPARTMENTS_PRICE, CAPACITY, GUESTS, ROOM_NUMBER, COUNT_ROOMS,
-  TIMEIN, TIMEIN_ARR, TIMEOUT, TIMEOUT_ARR, FEATURES, DESCRIPTION} from '../const.js';
+import { HOTELS, sentDataFail, sentDataSuccess } from './data-events.js';
+import { createPins, initMap } from './create-map.js';
+
+const avatar = document.querySelector('#avatar');
+const avatarWrap = document.querySelector('.ad-form-header__preview');
+const title = document.querySelector('#title');
+const addressInput = document.querySelector('#address');
+const appsType = document.querySelector('#type');
+const apsOptions = [...appsType];
+const appsPrice = document.querySelector('#price');
+const roomNumber = document.querySelector('#room_number');
+const countRooms = [...roomNumber.children];
+const capacity = document.querySelector('#capacity');
+const guests = [...capacity.children];
+const reversedGuests = guests.slice().reverse();
+const timein = document.querySelector('#timein');
+const timeins = [...timein];
+const timeout = document.querySelector('#timeout');
+const timeouts = [...timeout];
+const features = document.querySelectorAll('.features__checkbox');
+const description = document.querySelector('#description');
+const images = document.querySelector('#images');
+const imagesWrap = document.querySelector('.ad-form__photo');
+const adForm = document.querySelector('.ad-form');
+const adFormSubmit = document.querySelector('.ad-form__submit');
+const userFormReset = document.querySelector('.ad-form__reset');
+const mapFilters = document.querySelectorAll('.map__filter');
+const mapCheckboxes = document.querySelectorAll('.map__checkbox');
+let newImagesImg;
 
 export const initFormValidate = () => {
   const form = document.querySelector('.ad-form');
 
-  // Синхронизация полей «Количество комнат» и «Количество мест» задание 8.1
+  // Синхронизация полей «Количество комнат» и «Количество мест»
   const enableGuests = (selectedRooms) => {
-    GUESTS.slice().reverse().forEach((guest, index) => {
-      if (index <= selectedRooms && index !== 0 && selectedRooms !== String(MAX_GUESTS)) {
-        if (guest.classList.contains('hidden')) {
-          guest.classList.remove('hidden');
-        }
+    reversedGuests.forEach((guest, index) => {
+      if (index <= selectedRooms && index !== 0 && selectedRooms !== MAX_GUESTS) {
+        guest.classList.remove('hidden');
         if (index === 1) {
           guest.setAttribute('selected', 'selected');
-          CAPACITY.value = index;
+          capacity.value = index;
         }
-      } else if (index === 0 && selectedRooms === String(MAX_GUESTS)) {
+      } else if (index === 0 && selectedRooms === MAX_GUESTS) {
         guest.classList.remove('hidden');
         guest.setAttribute('selected', 'selected');
       } else {
@@ -31,68 +54,95 @@ export const initFormValidate = () => {
   };
 
   // Логика выбора типа жилья (Задание 8.2)
-  APPARTMENTS_TYPE.addEventListener('change', (event) => {
+  appsType.addEventListener('change', (event) => {
     switch (event.target.value) {
       case 'flat':
-        APPARTMENTS_PRICE.setAttribute('min', `${FLAT_MIN_PRICE} ₽`); //?
-        APPARTMENTS_PRICE.value = '';
-        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${FLAT_MIN_PRICE} ₽`); //?
+        appsPrice.setAttribute('min', `${FLAT_MIN_PRICE} ₽`);
+        appsPrice.value = '';
+        appsPrice.setAttribute('placeholder', `от ${FLAT_MIN_PRICE} ₽`);
         break;
       case 'bungalow':
-        APPARTMENTS_PRICE.setAttribute('min', `${BUNGALOW_MIN_PRICE} ₽`); //?
-        APPARTMENTS_PRICE.value = '';
-        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${BUNGALOW_MIN_PRICE} ₽`); //?
+        appsPrice.setAttribute('min', `${BUNGALOW_MIN_PRICE} ₽`);
+        appsPrice.value = '';
+        appsPrice.setAttribute('placeholder', `от ${BUNGALOW_MIN_PRICE} ₽`);
         break;
       case 'house':
-        APPARTMENTS_PRICE.setAttribute('min', `${HOUSE_MIN_PRICE} ₽`); //?
-        APPARTMENTS_PRICE.value = '';
-        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${HOUSE_MIN_PRICE} ₽`); //?
+        appsPrice.setAttribute('min', `${HOUSE_MIN_PRICE} ₽`);
+        appsPrice.value = '';
+        appsPrice.setAttribute('placeholder', `от ${HOUSE_MIN_PRICE} ₽`);
         break;
       case 'palace':
-        APPARTMENTS_PRICE.setAttribute('min', `${PALACE_MIN_PRICE} ₽`); //?
-        APPARTMENTS_PRICE.value = '';
-        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${PALACE_MIN_PRICE} ₽`); //?
+        appsPrice.setAttribute('min', `${PALACE_MIN_PRICE} ₽`);
+        appsPrice.value = '';
+        appsPrice.setAttribute('placeholder', `от ${PALACE_MIN_PRICE} ₽`);
         break;
       case 'hotel':
-        APPARTMENTS_PRICE.setAttribute('min', `${HOTEL_MIN_PRICE} ₽`); //?
-        APPARTMENTS_PRICE.value = '';
-        APPARTMENTS_PRICE.setAttribute('placeholder', `от ${HOTEL_MIN_PRICE} ₽`); //?
+        appsPrice.setAttribute('min', `${HOTEL_MIN_PRICE} ₽`);
+        appsPrice.value = '';
+        appsPrice.setAttribute('placeholder', `от ${HOTEL_MIN_PRICE} ₽`);
         break;
       default:
         break;
     }
   });
 
-  ROOM_NUMBER.addEventListener('change', (event) => {
+  roomNumber.addEventListener('change', (event) => {
     enableGuests(event.target.value);
   });
 
-  // Синхронизация времени заезда и времени выезда (Задание 8.2)
-  const conditionTime = (arr, currentTime) => {
-    arr.forEach((time) => {
-      if (time.value === currentTime.value) {
-        time.setAttribute('selected', 'selected');
-      } else {
+  const syncTime = (val, currentSelect) => {
+    let anotherSelect;
+    let anotherOptions;
+    if (currentSelect === 'in') {
+      anotherSelect = timeout;
+      anotherOptions = timeouts;
+    } else if (currentSelect === 'out') {
+      anotherSelect = timein;
+      anotherOptions = timeins;
+    }
+    anotherSelect.value = val;
+    anotherOptions.forEach((time) => {
+      if (time.value !== val) {
         time.removeAttribute('selected');
+      } else {
+        time.setAttribute('selected', 'selected');
       }
     });
   };
 
-  const syncTime = (target, str) => {
-    if (str === 'in') {
-      conditionTime(TIMEOUT_ARR, target);
-    }
-    if (str === 'out') {
-      conditionTime(TIMEIN_ARR, target);
-    }
-  };
-
-  TIMEIN.addEventListener('change', (event) => {
-    syncTime(event.target, 'in');
+  timein.addEventListener('change', (evt) => {
+    syncTime(evt.target.value, 'in');
   });
 
-  TIMEOUT.addEventListener('change', (event) => {
-    syncTime(event.target, 'out');
+  timeout.addEventListener('change', (evt) => {
+    syncTime(evt.target.value, 'out');
+  });
+
+  avatar.addEventListener('change', () => {
+    if (avatar.files && avatar.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        document.querySelector('.ad-form-header__preview img').classList.add('hidden');
+        const newAvatarImg = document.createElement('img');
+        newAvatarImg.className = 'preview-img';
+        newAvatarImg.setAttribute('src', evt.target.result);
+        avatarWrap.prepend(newAvatarImg);
+      };
+      reader.readAsDataURL(avatar.files[0]);
+    }
+  });
+
+  images.addEventListener('change', () => {
+    if (images.files && images.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        newImagesImg = document.createElement('img');
+        newImagesImg.className = 'preview-img';
+        newImagesImg.setAttribute('src', evt.target.result);
+        imagesWrap.prepend(newImagesImg);
+      };
+      reader.readAsDataURL(images.files[0]);
+    }
   });
 
   const pristine = new Pristine(form, {
@@ -113,8 +163,6 @@ export const initFormValidate = () => {
       /*eslint-enable*/
     }
   });
-
-
 };
 
 const setCurrentOption = (arr, index) => {
@@ -130,54 +178,80 @@ const setCurrentOption = (arr, index) => {
 
 // Функция сброса формы создания объявления
 export const resetUserForm = () => {
+  const {
+    defaultLat,
+    defaultLng,
+  } = DEFAULT_COORDINATES;
   // Аватар
-  AVATAR.value = '';
+  avatar.value = '';
+  document.querySelector('.ad-form-header__preview img').classList.remove('hidden');
+  document.querySelector('.ad-form-header__preview img').setAttribute('src', 'img/muffin-grey.svg');
 
   // Заголовок
-  TITLE.value = '';
+  title.value = '';
 
   // Координаты
-  ADDRESS.value = ADDRESS.defaultValue;
+  initMap();
+  addressInput.value = `${defaultLat.toFixed(5)}, ${defaultLng.toFixed(5)}`;
 
   // Тип жилья
-  setCurrentOption(APPARTMENTS_OPTIONS, 0);
+  setCurrentOption(apsOptions, 1);
 
   // Цена за ночь
-  APPARTMENTS_PRICE.value = APPARTMENTS_PRICE.defaultValue;
-  APPARTMENTS_PRICE.setAttribute('placeholder', 'от 0 ₽');
+  appsPrice.value = appsPrice.defaultValue;
+  appsPrice.setAttribute('placeholder', 'от 1000 у.е.');
 
   // Количество комнат
-  setCurrentOption(COUNT_ROOMS, 0);
+  setCurrentOption(countRooms, 0);
 
   // Количество гостей
-  setCurrentOption(GUESTS, 2);
-  CAPACITY.value = '1';
+  setCurrentOption(guests, 2);
+  capacity.value = '1';
 
   // Время заезда
-  setCurrentOption(TIMEIN_ARR, 0);
-  TIMEIN.value = '12:00';
+  setCurrentOption(timeins, 0);
+  timein.value = '12:00';
 
   // Время выезда
-  setCurrentOption(TIMEOUT_ARR, 0);
-  TIMEOUT.value = '12:00';
+  setCurrentOption(timeouts, 0);
+  timeout.value = '12:00';
 
   // Удобства
-  FEATURES.forEach((feature) => {
+  features.forEach((feature) => {
     feature.checked = false;
   });
 
   // Описание
-  DESCRIPTION.value = '';
+  description.value = '';
 
   // Фото жилья
-  IMAGES.value = '';
+  images.value = '';
+  if (document.querySelector('.preview-img')) {
+    document.querySelectorAll('.preview-img').forEach((img) => {
+      img.remove();
+    });
+  }
+
+  // Сброс селектов фильтра
+  mapFilters.forEach((filter) => {
+    filter.value = 'any';
+  });
+
+  // Сброс чекбоксов фильтра
+  mapCheckboxes.forEach((checkbox) => {
+    if (checkbox.checked === true) {
+      checkbox.checked = false;
+    }
+  });
+
+  createPins(HOTELS);
 };
 
 // Функция переопределения логики кнопки "Опубликовать"
 export const setUserFormSubmit = () => {
-  AD_FORM.addEventListener('submit', (evt) => {
+  adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    AD_FORM_SUBMIT.setAttribute('disabled', '');
+    adFormSubmit.setAttribute('disabled', '');
 
     postData(
       sentDataSuccess,
@@ -189,7 +263,7 @@ export const setUserFormSubmit = () => {
 
 // Функция переопределение логики кнопки "очистить"
 export const setUserFormReset = () => {
-  USER_FORM_RESET.addEventListener('click', (evt) => {
+  userFormReset.addEventListener('click', (evt) => {
     evt.preventDefault();
     resetUserForm();
   });

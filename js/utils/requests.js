@@ -16,6 +16,8 @@ export const getData = (onSuccess, onError) => {
       onSuccess(hotels);
     })
     .catch((err) => {
+      /*eslint-disable*/
+      console.log(err);
       onError(err);
     });
 };

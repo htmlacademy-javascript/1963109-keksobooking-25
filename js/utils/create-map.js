@@ -1,67 +1,104 @@
 import {
-  setActive
+  setActiveAdForm
 } from './page-mode.js';
 import {
   createPopup
 } from './create-popup.js';
-import { DEFAULT_COORDINATES, MAIN_MARKER_PATH, MAIN_MARKER_SIZE, MARKER_PATH, MARKER_SIZE } from '../const.js';
+import { DEFAULT_COORDINATES, MAIN_MARKER_PATH, MAIN_MARKER_SIZE, MARKERS_COUNT, MARKER_PATH, MARKER_SIZE, TITLE_LAYER_ATTRIBUTION, TITLE_LAYER_URL } from '../const.js';
+import {
+  getData
+} from './requests.js';
+import {
+  getDataFail,
+  getDataSuccess
+} from './data-events.js';
 
-const address = document.querySelector('#address');
+const addressInput = document.querySelector('#address');
+let map;
+let mainPinIcon;
+let mainPinMarker;
+let markers;
 
-export const createMap = (hotelsList) => {
+export const initMainMarker = () => {
+  if (mainPinMarker) {
+    mainPinMarker.remove();
+  }
   const {
     defaultLat,
     defaultLng,
   } = DEFAULT_COORDINATES;
-
-  address.value = `${defaultLat}, ${defaultLng}`;
-
-  // Инициализация карты
-  const map = L.map('map-canvas')
-    .on('load', () => {
-      setActive();
-    })
-    .setView({
-      lat: defaultLat,
-      lng: defaultLng,
-    }, 12);
-
-  L.tileLayer(
-    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    },
-  ).addTo(map);
-
-  /* Задание 9 пункт 3: */
   // Кастомный маркер -
-  const mainPinIcon = L.icon({
+  mainPinIcon = L.icon({
     iconUrl: MAIN_MARKER_PATH,
     iconSize: MAIN_MARKER_SIZE,
     iconAnchor: [26, 52],
   });
   // Инициализация главного маркера
-  const mainPinMarker = L.marker({
+  const mainMarker = L.marker({
     lat: defaultLat,
     lng: defaultLng,
   }, {
     draggable: true,
     icon: mainPinIcon,
   });
-  // Добавление главного маркера на карту
-  mainPinMarker.addTo(map);
 
-  // Выбор адреса - Задание 9 пункт 4
-  mainPinMarker.on('move', (event) => {
+  // Выбор адреса
+  mainMarker.on('move', (event) => {
     const {
       lat,
       lng,
     } = event.target.getLatLng();
 
-    address.value = `${lat}, ${lng}`;
+    addressInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   });
 
-  // Добавление на карту 'обычных' меток объявлений - (задание 9 пункт 5)
+  return mainMarker;
+};
+
+// Инициализация карты
+export const initMap = () => {
+  const {
+    defaultLat,
+    defaultLng,
+  } = DEFAULT_COORDINATES;
+
+  /*eslint-disable*/
+  addressInput.value = `${defaultLat.toFixed(5)}, ${defaultLng.toFixed(5)}`;
+
+  if (map === undefined) {
+    map = L.map('map-canvas')
+      .on('load', () => {
+        setActiveAdForm();
+        getData(getDataSuccess, getDataFail); // Получаем данные отелей с сервера
+      })
+      .setView({
+        lat: defaultLat,
+        lng: defaultLng,
+      }, 12);
+    L.tileLayer(
+      TITLE_LAYER_URL,
+      {
+        attribution: TITLE_LAYER_ATTRIBUTION,
+      },
+    ).addTo(map);
+  }
+
+  mainPinMarker = initMainMarker();
+
+  // Добавление главного маркера на карту
+  mainPinMarker.addTo(map);
+};
+
+export const createPins = (hotels) => {
+  if (markers) {
+    markers.forEach((item) => {
+      map.removeLayer(item);
+    });
+  }
+
+  markers = [];
+
+  // Добавление на карту 'обычных' меток объявлений
   const createAdMarker = (hotel) => {
     const {
       lat,
@@ -80,14 +117,29 @@ export const createMap = (hotelsList) => {
     }, {
       icon,
     });
-    // добавляем балуны
+
     marker
       .addTo(map)
       .bindPopup(
         createPopup(hotel),
       );
+
+    markers.push(marker);
   };
 
-  const createAds = (ads) => ads.forEach(createAdMarker);
-  createAds(hotelsList);
+  const createAds = (ads) => {
+    if (ads.length > MARKERS_COUNT) {
+      for (let index = 0; index < MARKERS_COUNT; index++) {
+        createAdMarker(ads[index]);
+      }
+    } else {
+      ads.forEach(createAdMarker);
+    }
+  };
+  createAds(hotels);
+};
+
+export {
+  mainPinMarker,
+  mainPinIcon
 };

@@ -23,13 +23,13 @@ export const createHotel = (count) => {
     title: `Отель ${count + 1}`,
     address: `${location.lat} , ${location.lng}`,
     price: returnRandomDiceNum(OFFER_MIN_PRICE, OFFER_MAX_PRICE),
-    type: BUILDINGS[returnRandomDiceNum(0, BUILDINGS.length - 1)], //?
+    type: BUILDINGS[returnRandomDiceNum(0, BUILDINGS.length - 1)],
     rooms: returnRandomDiceNum(OFFER_MIN_ROOMS, OFFER_MAX_ROOMS),
     guests: returnRandomDiceNum(OFFER_MIN_GUESTS, OFFER_MAX_GUESTS),
-    checkin: CHECK_TIME[returnRandomDiceNum(0, CHECK_TIME.length - 1)], //?
-    ckeckout: CHECK_TIME[returnRandomDiceNum(0, CHECK_TIME.length - 1)], //?
+    checkin: CHECK_TIME[returnRandomDiceNum(0, CHECK_TIME.length - 1)],
+    ckeckout: CHECK_TIME[returnRandomDiceNum(0, CHECK_TIME.length - 1)],
     features: shuffleArr(FACILITIES),
-    description: TYPE_OF_ROOM[returnRandomDiceNum(0, TYPE_OF_ROOM.length - 1)], //?
+    description: TYPE_OF_ROOM[returnRandomDiceNum(0, TYPE_OF_ROOM.length - 1)],
     photos: growArr(PHOTO_EXAMPLES),
   };
 
