@@ -125,7 +125,7 @@
           <!--Ограничение на вводимые данные в цену за ночь (Задание 8.1)-->
           <label class="ad-form__label">
             <div class="input-title">Цена за ночь, руб.</div>
-            <input id="price" name="price" type="number" placeholder="от 0 у.е." min="0" max="100000" step="100"
+            <input id="price" name="price" type="number" placeholder="от 1000 у.е." min="0" max="100000" step="100"
               data-pristine-required data-pristine-required-message="Обязательное поле"
               data-pristine-minlength-message="Минимальная цена 0 у.е."
               data-pristine-maxlength-message="Максимальная цена 100000 у.е.">
@@ -263,6 +263,14 @@
   <template id="error">
     <div class="error">
       <p class="error__message">Ошибка размещения объявления</p>
+      <button type="button" class="error__button">Попробовать снова</button>
+    </div>
+  </template>
+
+  <!-- Сообщение об ошибке загрузки данных с сервера -->
+  <template id="error-downloading">
+    <div class="error-downloading">
+      <p class="error__message">Ошибка загрузки данных</p>
       <button type="button" class="error__button">Попробовать снова</button>
     </div>
   </template>

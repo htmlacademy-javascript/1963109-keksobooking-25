@@ -1,39 +1,48 @@
+import {
+  initFormValidate,
+  setUserFormReset,
+  setUserFormSubmit
+} from './work-with-form.js';
+
 const adForm = document.querySelector('.ad-form');
 const mapFilters = document.querySelector('.map__filters');
 
-//неактивное состояние
-export const setDisabled = () => {
-
-  adForm.classList.add('ad-form--disabled'); //Форма заполнения информации об объявлении .ad-form содержит класс ad-form--disabled;
-  mapFilters.classList.add('map__filters--disabled');//Форма c фильтрами map__filters заблокирована так же, как и форма .ad-form;
-
-  [...adForm.children].forEach((element) => { //блокировка всех элементов формы .ad-form
-    if (element.matches('fieldset')) {
-      element.setAttribute('disabled', 'true');
-    }
-  });
-
-  [...mapFilters.children].forEach((element) => { //блокировка всех элементов формы .map__filters
-    if (element.matches('fieldset')) {
-      element.setAttribute('disabled', 'true');
-    }
+export const setDisabledAdForm = () => {
+  adForm.classList.add('ad-form--disabled');
+  [...adForm.children].forEach((element) => {
+    element.setAttribute('disabled', 'true');
   });
 };
 
-//активное состояние
-export const setActive = () => {
+export const setDisabledFilterForm = () => {
+  mapFilters.classList.add('map__filters--disabled');
+  [...mapFilters.children].forEach((element) => {
+    element.setAttribute('disabled', 'true');
+  });
+};
+
+export const setActiveAdForm = () => {
   adForm.classList.remove('ad-form--disabled');
+
+  [...adForm.children].forEach((element) => {
+    element.removeAttribute('disabled');
+  });
+
+  initFormValidate(); // Подключаем валидацию формы
+  setUserFormSubmit(); // Установка новой логики отправки формы объявления
+  setUserFormReset();
+};
+
+export const setActiveFilter = () => {
   mapFilters.classList.remove('map__filters--disabled');
 
-  [...adForm.children].forEach((element) => { //разблокировка всех элементов формы .ad-form
-    if (element.matches('fieldset')) {
-      element.removeAttribute('disabled', 'true');
-    }
+  [...mapFilters.children].forEach((element) => {
+    element.removeAttribute('disabled');
   });
+};
 
-  [...mapFilters.children].forEach((element) => { //разблокировка всех элементов формы .map__filters
-    if (element.matches('fieldset')) {
-      element.removeAttribute('disabled', 'true');
-    }
-  });
+// Деактивируем все формы
+export const setDisabled = () => {
+  setDisabledAdForm();
+  setDisabledFilterForm();
 };
