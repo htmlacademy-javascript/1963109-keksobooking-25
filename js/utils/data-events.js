@@ -1,3 +1,4 @@
+//Задание 11.2 Добавьте обработку возможных ошибок при загрузке.
 import {
   createPins
 } from './create-map.js';
@@ -124,4 +125,4 @@ export const sentDataFail = () => {
   document.addEventListener('keydown', onErrorMessageEsc);
 };
 
-export {HOTELS};
+export { HOTELS };
